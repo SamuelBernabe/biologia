@@ -26,8 +26,8 @@
             <i class="fas fa-check-circle"></i> </div>
 
         <div id="game-over-container" class="hide result-screen">
-            <h2>Game Over!</h2>
-            <p id="game-over-message"></p>
+            <h2 id="game-over-title">VOCÊ PERDEU!</h2>
+            <img id="game-over-image" src="gato.jpeg" alt="Game Over">
             <button id="restart-game-over-button">RECOMEÇAR</button>
         </div>
 
@@ -37,6 +37,8 @@
             <button id="restart-button">Jogar Novamente</button>
         </div>
     </div>
+
+    <audio id="game-over-sound" src="caminho/para/seu/som-game-over.mp3" preload="auto"></audio>
 
     <script src="script.js"></script>
 </body>

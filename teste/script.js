@@ -194,13 +194,15 @@ const questionElement = document.getElementById('question');
 const answerButtonsElement = document.getElementById('answers');
 const resultContainer = document.getElementById('result-container');
 const gameOverContainer = document.getElementById('game-over-container');
-const quizContainer = document.querySelector('.quiz-container');
+const quizContainer = document.querySelector('.quiz-container'); // O quiz principal
 const restartButton = document.getElementById('restart-button');
 const restartGameOverButton = document.getElementById('restart-game-over-button');
 const scoreElement = document.getElementById('score');
 const totalQuestionsElement = document.getElementById('total-questions');
 const correctFeedbackIcon = document.getElementById('correct-feedback');
-const gameOverMessage = document.getElementById('game-over-message');
+const gameOverTitle = document.getElementById('game-over-title');
+const gameOverImage = document.getElementById('game-over-image');
+const gameOverSound = document.getElementById('game-over-sound');
 
 const timerElement = document.getElementById('timer');
 const timerProgressBar = document.querySelector('.timer-progress');
@@ -216,16 +218,26 @@ let timerInterval;
 timerProgressBar.style.strokeDasharray = CIRCUMFERENCE;
 timerProgressBar.style.strokeDashoffset = 0;
 
-// Função auxiliar para gerenciar a exibição das telas
-function showScreen(screenToShow) {
-    // Esconde todas as telas primeiro
-    quizContainer.classList.add('hide');
-    resultContainer.classList.add('hide');
-    gameOverContainer.classList.add('hide');
+// Referência a todas as telas que podem ser mostradas/ocultadas
+const allScreens = [quizContainer, resultContainer, gameOverContainer];
 
-    // Em seguida, mostra a tela desejada
-    screenToShow.classList.remove('hide');
+// --- NOVO: Função centralizada e mais robusta para mostrar uma tela ---
+function showScreen(screenToShow) {
+    // Primeiro, oculte TODAS as telas e remova a classe 'active-screen'
+    allScreens.forEach(screen => {
+        screen.classList.add('hide'); // Garante que estejam escondidas pela opacidade e visibilidade
+        screen.classList.remove('active-screen'); // Remove a classe de ativação
+    });
+
+    // Em seguida, após um pequeno delay para garantir que as classes 'hide' foram aplicadas
+    // remove a classe 'hide' da tela desejada e adiciona 'active-screen'
+    setTimeout(() => {
+        screenToShow.classList.remove('hide'); // Remove hide para permitir que active-screen funcione
+        screenToShow.classList.add('active-screen'); // Ativa a tela desejada
+    }, 50); // Aumentei o delay para garantir a renderização das classes 'hide'
 }
+// ---------------------------------------------------------------------
+
 
 function startQuiz() {
     currentQuestionIndex = 0;
@@ -291,8 +303,9 @@ function selectAnswer(e) {
         correctFeedbackIcon.classList.add('show');
         setTimeout(advanceQuestion, 1500);
     } else {
-        // Atrasamos a exibição da tela de Game Over para permitir a animação da resposta incorreta
-        setTimeout(() => showGameOver('incorrect'), 1500);
+        // Atrasamos um pouco mais a exibição da tela de Game Over para garantir
+        // que a animação da resposta incorreta e qualquer outra transição termine.
+        setTimeout(() => showGameOver(), 2000); 
     }
 }
 
@@ -307,19 +320,22 @@ function showResult() {
     totalQuestionsElement.innerText = questions.length;
 }
 
-function showGameOver(reason) {
+function showGameOver() {
     stopTimer();
-    showScreen(gameOverContainer); // Mostra a tela de Game Over
+    // Usa a função showScreen para garantir que todas as outras telas estejam ocultas.
+    showScreen(gameOverContainer); 
 
-    if (reason === 'timeout') {
-        gameOverMessage.innerText = "Seu tempo acabou!";
-    } else if (reason === 'incorrect') {
-        gameOverMessage.innerText = "Resposta incorreta!";
+    gameOverTitle.innerText = "VOCÊ PERDEU!";
+
+    if (gameOverSound) {
+        gameOverSound.currentTime = 0; 
+        gameOverSound.play().catch(e => console.error("Erro ao tocar som:", e)); 
     }
 
     timerProgressBar.style.strokeDashoffset = 0;
     timerElement.innerText = TIMER_DURATION;
 }
+
 
 function advanceQuestion() {
     currentQuestionIndex++;
@@ -346,7 +362,8 @@ function startTimer() {
 
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
-            showGameOver('timeout');
+            // Chama showGameOver após um pequeno atraso para o timer zerar visualmente
+            setTimeout(() => showGameOver(), 500); 
         }
     }, 1000);
 }
@@ -365,4 +382,6 @@ function resetTimer() {
 restartButton.addEventListener('click', startQuiz);
 restartGameOverButton.addEventListener('click', startQuiz);
 
+// Garante que ao iniciar, apenas o quizContainer esteja ativo.
+// Se você tiver uma tela de início antes do quiz, chame-a aqui.
 startQuiz();

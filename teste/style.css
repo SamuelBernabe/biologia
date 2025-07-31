@@ -193,18 +193,19 @@ body {
     background-color: var(--card-background);
     z-index: 10;
     box-sizing: border-box;
-    transition: opacity 0.5s ease-in-out;
-    opacity: 1;
-    pointer-events: auto;
+    /* Remover a transição de opacidade aqui, o JS vai controlar isso de forma mais direta */
+    /* transition: opacity 0.5s ease-in-out; */
+    opacity: 0; /* Começa sempre oculto */
+    pointer-events: none; /* Não interacionável por padrão */
+    visibility: hidden; /* Totalmente oculto por padrão */
 }
 
-/* Garante que quando está hide, não seja interacionável */
-.result-screen.hide {
-    opacity: 0;
-    pointer-events: none;
-    /* Aumenta o atraso para a visibilidade sumir, permitindo a transição de opacidade */
-    visibility: hidden;
-    transition: opacity 0.5s ease-in-out, visibility 0s 0.5s;
+/* Quando uma tela deve ser mostrada */
+.result-screen.active-screen {
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+    transition: opacity 0.5s ease-in-out; /* Transição apenas ao aparecer */
 }
 
 
@@ -212,15 +213,29 @@ body {
 #game-over-container {
     background-color: var(--game-over-bg);
     border: 1px solid var(--incorrect-color);
+    gap: 20px;
 }
 
-#game-over-container h2 {
+#game-over-container #game-over-title {
     color: var(--incorrect-color);
+    font-size: 3em;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+#game-over-container #game-over-image {
+    max-width: 80%;
+    max-height: 200px;
+    border-radius: var(--border-radius);
+    object-fit: contain;
+    margin-bottom: 20px;
 }
 
 /* Estilos para o botão RECOMEÇAR na tela de Game Over */
 #game-over-container #restart-game-over-button {
     background-color: var(--incorrect-color);
+    color: white;
+    border: none;
     box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
     width: 180px;
     height: 180px;
@@ -232,6 +247,8 @@ body {
     padding: 0;
     text-transform: uppercase;
     font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 #game-over-container #restart-game-over-button:hover {
@@ -240,20 +257,11 @@ body {
     box-shadow: 0 7px 18px rgba(244, 67, 54, 0.4);
 }
 
-/* Classe global para ocultar elementos */
+/* A classe 'hide' será menos usada, controlaremos mais com 'active-screen' */
 .hide {
     opacity: 0;
     pointer-events: none;
     visibility: hidden;
-    /* Aumenta o atraso para a visibilidade sumir, permitindo a transição de opacidade */
-    transition: opacity 0.3s ease-in-out, visibility 0s 0.3s;
-}
-
-/* Quando um elemento não está oculto, resetamos as propriedades */
-.quiz-container:not(.hide),
-.result-screen:not(.hide) {
-    opacity: 1;
-    pointer-events: auto;
-    visibility: visible;
-    transition: opacity 0.3s ease-in-out;
+    /* Transição mais curta para o 'hide' caso ainda seja usado */
+    transition: opacity 1000s ease-in-out, visibility 0s 100000s;
 }
