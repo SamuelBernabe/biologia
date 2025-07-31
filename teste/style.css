@@ -1,0 +1,259 @@
+:root {
+    --primary-color: #4CAF50; /* Verde vibrante */
+    --secondary-color: #2196F3; /* Azul para destaque */
+    --background-color: #e0f2f7; /* Azul claro suave */
+    --card-background: #ffffff; /* Branco puro para cartões */
+    --text-color: #333;
+    --light-text-color: #666;
+    --border-radius: 12px;
+    --box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    --correct-color: #4CAF50; /* Verde */
+    --incorrect-color: #f44336; /* Vermelho */
+    --timer-color: #2196F3; /* Cor do círculo do timer */
+    --timer-bg-color: #e0e0e0; /* Cor de fundo do timer */
+    --game-over-bg: #ffebee; /* Fundo para Game Over (vermelho claro) */
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--background-color);
+    margin: 0;
+    line-height: 1.6;
+    color: var(--text-color);
+}
+
+.quiz-container {
+    background-color: var(--card-background);
+    padding: 40px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    width: 90%;
+    max-width: 650px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Estilos do Cronômetro SVG */
+.timer-container {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    width: 70px;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.timer-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.timer-bg {
+    fill: none;
+    stroke: var(--timer-bg-color);
+    stroke-width: 5;
+}
+
+.timer-progress {
+    fill: none;
+    stroke: var(--timer-color);
+    stroke-width: 5;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s linear;
+    stroke-dasharray: 188.495;
+    stroke-dashoffset: 0;
+}
+
+.timer-text {
+    position: relative;
+    font-size: 1.4em;
+    font-weight: 700;
+    color: var(--text-color);
+    z-index: 2;
+}
+
+.question-container {
+    margin-bottom: 30px;
+    margin-top: 50px;
+}
+
+#question {
+    font-size: 1.8em;
+    color: var(--text-color);
+    margin-bottom: 35px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.answers-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+@media (min-width: 600px) {
+    .answers-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.answer-button {
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    padding: 18px 25px;
+    font-size: 1.15em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--light-text-color);
+    text-align: center;
+    font-weight: 400;
+}
+
+.answer-button:hover {
+    background-color: #e5e5e5;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    color: var(--text-color);
+}
+
+.answer-button.correct {
+    background-color: var(--correct-color);
+    color: white;
+    border-color: var(--correct-color);
+    transform: scale(1.02);
+    box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+}
+
+.answer-button.incorrect {
+    background-color: var(--incorrect-color);
+    color: white;
+    border-color: var(--incorrect-color);
+    transform: scale(0.98);
+    box-shadow: 0 6px 15px rgba(244, 67, 54, 0.4);
+}
+
+.answer-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.feedback-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 8em;
+    color: var(--correct-color);
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.feedback-icon.show {
+    opacity: 1;
+    animation: pop-in 0.3s ease-out forwards;
+}
+
+@keyframes pop-in {
+    0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+
+/* Estilos para Telas de Resultado e Game Over (reutilizáveis) */
+.result-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+    background-color: var(--card-background);
+    z-index: 10;
+    box-sizing: border-box;
+    transition: opacity 0.5s ease-in-out;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Garante que quando está hide, não seja interacionável */
+.result-screen.hide {
+    opacity: 0;
+    pointer-events: none;
+    /* Aumenta o atraso para a visibilidade sumir, permitindo a transição de opacidade */
+    visibility: hidden;
+    transition: opacity 0.5s ease-in-out, visibility 0s 0.5s;
+}
+
+
+/* Estilos específicos para a tela de Game Over */
+#game-over-container {
+    background-color: var(--game-over-bg);
+    border: 1px solid var(--incorrect-color);
+}
+
+#game-over-container h2 {
+    color: var(--incorrect-color);
+}
+
+/* Estilos para o botão RECOMEÇAR na tela de Game Over */
+#game-over-container #restart-game-over-button {
+    background-color: var(--incorrect-color);
+    box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
+    width: 180px;
+    height: 180px;
+    border-radius: 50%; /* Mantido como círculo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8em;
+    padding: 0;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+#game-over-container #restart-game-over-button:hover {
+    background-color: #cc0000;
+    transform: scale(1.05);
+    box-shadow: 0 7px 18px rgba(244, 67, 54, 0.4);
+}
+
+/* Classe global para ocultar elementos */
+.hide {
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    /* Aumenta o atraso para a visibilidade sumir, permitindo a transição de opacidade */
+    transition: opacity 0.3s ease-in-out, visibility 0s 0.3s;
+}
+
+/* Quando um elemento não está oculto, resetamos as propriedades */
+.quiz-container:not(.hide),
+.result-screen:not(.hide) {
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+    transition: opacity 0.3s ease-in-out;
+}
