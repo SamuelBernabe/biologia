@@ -39,6 +39,28 @@ body {
     transition: opacity 0.3s ease-in-out;
 }
 
+/* NOVO: Estilos para o Contador de Vidas */
+.lives-container {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    display: flex;
+    align-items: center;
+    font-size: 1.5em;
+    color: var(--incorrect-color);
+    z-index: 10;
+}
+
+#lives-count {
+    margin-right: 8px;
+    font-weight: bold;
+}
+
+.lives-container .fa-heart {
+    color: var(--incorrect-color);
+}
+
+
 /* Estilos do Cronômetro SVG */
 .timer-container {
     position: absolute;
@@ -90,7 +112,6 @@ body {
     margin-top: 50px;
 }
 
-/* NOVO: Estilo para o Indicador de Pergunta */
 .question-indicator {
     font-size: 1.2em;
     color: var(--secondary-color);
@@ -233,18 +254,19 @@ body {
     margin-bottom: 20px;
 }
 
+/* Botão de recomeçar ajustado para ser retangular */
 #game-over-container #restart-game-over-button {
     background-color: var(--incorrect-color);
     color: white;
     border: none;
     box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
-    width: 180px;
-    height: 180px;
-    border-radius: 50%;
+    width: 250px;
+    height: 60px;
+    border-radius: var(--border-radius);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.8em;
+    font-size: 1.2em;
     padding: 0;
     text-transform: uppercase;
     font-weight: 700;
@@ -258,30 +280,3 @@ body {
     box-shadow: 0 7px 18px rgba(244, 67, 54, 0.4);
 }
 
-/* Estilos para o botão RECOMEÇAR na tela de Game Over */
-#game-over-container #restart-game-over-button {
-    background-color: var(--incorrect-color); /* Mantém o vermelho do tema de erro */
-    color: white;
-    border: none;
-    box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
-    /* NOVOS ESTILOS */
-    width: 250px; /* Largura do botão */
-    height: 100px; /* Altura do botão */
-    border-radius: var(--border-radius); /* Bordas arredondadas (12px) */
-    /* FIM DOS NOVOS ESTILOS */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.2em; /* Reduzi o tamanho da fonte para se adequar ao novo formato */
-    padding: 0;
-    text-transform: uppercase;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-#game-over-container #restart-game-over-button:hover {
-    background-color: #cc0000;
-    transform: scale(1.05);
-    box-shadow: 0 7px 18px rgba(244, 67, 54, 0.4);
-}

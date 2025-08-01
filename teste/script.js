@@ -45,15 +45,6 @@ const questions = [
         ]
     },
     {
-        question: "Onde o HIV se replica preferencialmente no corpo humano?",
-        answers: [
-            { text: "Células musculares", correct: false },
-            { text: "Neurônios", correct: false },
-            { text: "Linfócitos T CD4+", correct: true },
-            { text: "Células da pele", correct: false }
-        ]
-    },
-    {
         question: "Qual é o nome do processo pelo qual as plantas liberam água em forma de vapor?",
         answers: [
             { text: "Respiração", correct: false },
@@ -216,6 +207,11 @@ let score = 0;
 let timeLeft = TIMER_DURATION;
 let timerInterval;
 
+// NOVO: Variáveis para o sistema de vidas
+let lives = 5;
+const livesCountElement = document.getElementById('lives-count');
+
+
 timerProgressBar.style.strokeDasharray = CIRCUMFERENCE;
 timerProgressBar.style.strokeDashoffset = 0;
 
@@ -234,6 +230,8 @@ function showScreen(screenToShow) {
 function startQuiz() {
     currentQuestionIndex = 0;
     score = 0;
+    lives = 5; // Reseta as vidas
+    updateLivesDisplay(); // Atualiza a exibição das vidas
     
     showScreen(quizContainer);
 
@@ -245,7 +243,6 @@ function showQuestion() {
     resetState();
     const currentQuestion = questions[currentQuestionIndex];
     
-    // NOVO: Atualiza o indicador de pergunta
     questionIndicator.innerText = `${currentQuestionIndex + 1}/${questions.length}`;
 
     questionElement.innerText = currentQuestion.question;
@@ -278,6 +275,11 @@ function resetState() {
     }
 }
 
+// NOVA FUNÇÃO: Atualiza a exibição das vidas
+function updateLivesDisplay() {
+    livesCountElement.innerText = lives;
+}
+
 function selectAnswer(e) {
     stopTimer();
 
@@ -299,7 +301,13 @@ function selectAnswer(e) {
         correctFeedbackIcon.classList.add('show');
         setTimeout(advanceQuestion, 1500);
     } else {
-        setTimeout(() => showGameOver(), 2000); 
+        lives--; // Decrementa uma vida
+        updateLivesDisplay(); // Atualiza a exibição das vidas
+        if (lives <= 0) {
+            setTimeout(() => showGameOver(), 2000);
+        } else {
+            setTimeout(advanceQuestion, 2000);
+        }
     }
 }
 
@@ -354,7 +362,15 @@ function startTimer() {
 
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
-            setTimeout(() => showGameOver(), 500); 
+            setTimeout(() => {
+                lives--; // Decrementa uma vida ao esgotar o tempo
+                updateLivesDisplay();
+                if (lives <= 0) {
+                    showGameOver();
+                } else {
+                    advanceQuestion(); // Continua o jogo se ainda tiver vidas
+                }
+            }, 500); 
         }
     }, 1000);
 }
@@ -374,3 +390,37 @@ restartButton.addEventListener('click', startQuiz);
 restartGameOverButton.addEventListener('click', startQuiz);
 
 startQuiz();
+
+// Função para embaralhar um array (Fisher-Yates shuffle)
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+function showQuestion() {
+    resetState();
+    const currentQuestion = questions[currentQuestionIndex];
+    
+    questionIndicator.innerText = `${currentQuestionIndex + 1}/${questions.length}`;
+
+    questionElement.innerText = currentQuestion.question;
+
+    // NOVO: Embaralha as respostas antes de exibi-las
+    shuffleArray(currentQuestion.answers);
+
+    currentQuestion.answers.forEach(answer => {
+        const button = document.createElement('button');
+        button.innerText = answer.text;
+        button.classList.add('answer-button');
+        if (answer.correct) {
+            button.dataset.correct = answer.correct;
+        }
+        button.addEventListener('click', selectAnswer);
+        answerButtonsElement.appendChild(button);
+    });
+
+    resetTimer();
+    startTimer();
+}
