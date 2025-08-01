@@ -191,6 +191,7 @@ const questions = [
 ];
 
 const questionElement = document.getElementById('question');
+const questionIndicator = document.getElementById('question-indicator');
 const answerButtonsElement = document.getElementById('answers');
 const resultContainer = document.getElementById('result-container');
 const gameOverContainer = document.getElementById('game-over-container');
@@ -243,6 +244,10 @@ function startQuiz() {
 function showQuestion() {
     resetState();
     const currentQuestion = questions[currentQuestionIndex];
+    
+    // NOVO: Atualiza o indicador de pergunta
+    questionIndicator.innerText = `${currentQuestionIndex + 1}/${questions.length}`;
+
     questionElement.innerText = currentQuestion.question;
 
     currentQuestion.answers.forEach(answer => {

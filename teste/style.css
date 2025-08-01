@@ -90,6 +90,15 @@ body {
     margin-top: 50px;
 }
 
+/* NOVO: Estilo para o Indicador de Pergunta */
+.question-indicator {
+    font-size: 1.2em;
+    color: var(--secondary-color);
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: block;
+}
+
 #question {
     font-size: 1.8em;
     color: var(--text-color);
@@ -175,8 +184,6 @@ body {
     100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
-
-/* Estilos para Telas de Resultado e Game Over (reutilizáveis) */
 .result-screen {
     position: absolute;
     top: 0;
@@ -201,12 +208,10 @@ body {
 
 .result-screen.active-screen {
     opacity: 1;
-    pointer-events: auto !important; /* CORREÇÃO: Garante que os elementos se tornem clicáveis */
+    pointer-events: auto !important;
     visibility: visible;
 }
 
-
-/* Estilos específicos para a tela de Game Over */
 #game-over-container {
     background-color: var(--game-over-bg);
     border: 1px solid var(--incorrect-color);
@@ -228,7 +233,6 @@ body {
     margin-bottom: 20px;
 }
 
-/* Estilos para o botão RECOMEÇAR na tela de Game Over */
 #game-over-container #restart-game-over-button {
     background-color: var(--incorrect-color);
     color: white;
@@ -254,3 +258,30 @@ body {
     box-shadow: 0 7px 18px rgba(244, 67, 54, 0.4);
 }
 
+/* Estilos para o botão RECOMEÇAR na tela de Game Over */
+#game-over-container #restart-game-over-button {
+    background-color: var(--incorrect-color); /* Mantém o vermelho do tema de erro */
+    color: white;
+    border: none;
+    box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
+    /* NOVOS ESTILOS */
+    width: 250px; /* Largura do botão */
+    height: 100px; /* Altura do botão */
+    border-radius: var(--border-radius); /* Bordas arredondadas (12px) */
+    /* FIM DOS NOVOS ESTILOS */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em; /* Reduzi o tamanho da fonte para se adequar ao novo formato */
+    padding: 0;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#game-over-container #restart-game-over-button:hover {
+    background-color: #cc0000;
+    transform: scale(1.05);
+    box-shadow: 0 7px 18px rgba(244, 67, 54, 0.4);
+}
