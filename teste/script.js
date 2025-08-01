@@ -9,7 +9,7 @@ const questions = [
         ]
     },
     {
-        question: "Qual DST é causada por uma bactéria e pode levar a feridas indolores?",
+        question: "Qual IST é causada por uma bactéria e pode levar a feridas indolores?",
         answers: [
             { text: "Herpes Genital", correct: false },
             { text: "Sífilis", correct: true },
@@ -27,7 +27,7 @@ const questions = [
         ]
     },
     {
-        question: "Qual das seguintes DSTs é viral e não tem cura, mas pode ser controlada com medicamentos?",
+        question: "Qual das seguintes ISTs é viral e não tem cura, mas pode ser controlada com medicamentos?",
         answers: [
             { text: "Gonorreia", correct: false },
             { text: "Clamídia", correct: false },
@@ -63,7 +63,7 @@ const questions = [
         ]
     },
     {
-        question: "Qual DST pode causar verrugas genitais e é prevenida por vacina?",
+        question: "Qual IST pode causar verrugas genitais e é prevenida por vacina?",
         answers: [
             { text: "Herpes Genital", correct: false },
             { text: "Gonorreia", correct: false },
@@ -99,7 +99,7 @@ const questions = [
         ]
     },
     {
-        question: "Qual DST afeta principalmente a uretra, colo do útero e reto, causando secreção e dor ao urinar?",
+        question: "Qual IST afeta principalmente a uretra, colo do útero e reto, causando secreção e dor ao urinar?",
         answers: [
             { text: "Sífilis", correct: false },
             { text: "Gonorreia", correct: true },
@@ -117,7 +117,7 @@ const questions = [
         ]
     },
     {
-        question: "Qual DST é causada por um protozoário e pode causar corrimento vaginal com odor forte?",
+        question: "Qual IST é causada por um protozoário e pode causar corrimento vaginal com odor forte?",
         answers: [
             { text: "Clamídia", correct: false },
             { text: "Gonorreia", correct: false },
@@ -135,7 +135,7 @@ const questions = [
         ]
     },
     {
-        question: "Qual das seguintes DSTs é uma infecção bacteriana comum que muitas vezes não apresenta sintomas?",
+        question: "Qual das seguintes ISTs é uma infecção bacteriana comum que muitas vezes não apresenta sintomas?",
         answers: [
             { text: "Herpes Genital", correct: false },
             { text: "Clamídia", correct: true },
@@ -171,7 +171,7 @@ const questions = [
         ]
     },
     {
-        question: "O uso correto e consistente de qual método é essencial para prevenir a maioria das DSTs?",
+        question: "O uso correto e consistente de qual método é essencial para prevenir a maioria das ISTs?",
         answers: [
             { text: "Pílula anticoncepcional", correct: false },
             { text: "DIU", correct: false },
@@ -194,7 +194,7 @@ const questionElement = document.getElementById('question');
 const answerButtonsElement = document.getElementById('answers');
 const resultContainer = document.getElementById('result-container');
 const gameOverContainer = document.getElementById('game-over-container');
-const quizContainer = document.querySelector('.quiz-container'); // O quiz principal
+const quizContainer = document.querySelector('.quiz-container');
 const restartButton = document.getElementById('restart-button');
 const restartGameOverButton = document.getElementById('restart-game-over-button');
 const scoreElement = document.getElementById('score');
@@ -218,32 +218,23 @@ let timerInterval;
 timerProgressBar.style.strokeDasharray = CIRCUMFERENCE;
 timerProgressBar.style.strokeDashoffset = 0;
 
-// Referência a todas as telas que podem ser mostradas/ocultadas
 const allScreens = [quizContainer, resultContainer, gameOverContainer];
 
-// --- NOVO: Função centralizada e mais robusta para mostrar uma tela ---
 function showScreen(screenToShow) {
-    // Primeiro, oculte TODAS as telas e remova a classe 'active-screen'
     allScreens.forEach(screen => {
-        screen.classList.add('hide'); // Garante que estejam escondidas pela opacidade e visibilidade
-        screen.classList.remove('active-screen'); // Remove a classe de ativação
+        screen.classList.add('hide');
+        screen.classList.remove('active-screen');
     });
 
-    // Em seguida, após um pequeno delay para garantir que as classes 'hide' foram aplicadas
-    // remove a classe 'hide' da tela desejada e adiciona 'active-screen'
-    setTimeout(() => {
-        screenToShow.classList.remove('hide'); // Remove hide para permitir que active-screen funcione
-        screenToShow.classList.add('active-screen'); // Ativa a tela desejada
-    }, 50); // Aumentei o delay para garantir a renderização das classes 'hide'
+    screenToShow.classList.remove('hide');
+    screenToShow.classList.add('active-screen');
 }
-// ---------------------------------------------------------------------
-
 
 function startQuiz() {
     currentQuestionIndex = 0;
     score = 0;
     
-    showScreen(quizContainer); // Mostra o quiz principal
+    showScreen(quizContainer);
 
     showQuestion();
     startTimer();
@@ -303,15 +294,13 @@ function selectAnswer(e) {
         correctFeedbackIcon.classList.add('show');
         setTimeout(advanceQuestion, 1500);
     } else {
-        // Atrasamos um pouco mais a exibição da tela de Game Over para garantir
-        // que a animação da resposta incorreta e qualquer outra transição termine.
         setTimeout(() => showGameOver(), 2000); 
     }
 }
 
 function showResult() {
     stopTimer();
-    showScreen(resultContainer); // Mostra a tela de resultado final
+    showScreen(resultContainer);
 
     timerProgressBar.style.strokeDashoffset = 0;
     timerElement.innerText = TIMER_DURATION;
@@ -322,7 +311,6 @@ function showResult() {
 
 function showGameOver() {
     stopTimer();
-    // Usa a função showScreen para garantir que todas as outras telas estejam ocultas.
     showScreen(gameOverContainer); 
 
     gameOverTitle.innerText = "VOCÊ PERDEU!";
@@ -335,7 +323,6 @@ function showGameOver() {
     timerProgressBar.style.strokeDashoffset = 0;
     timerElement.innerText = TIMER_DURATION;
 }
-
 
 function advanceQuestion() {
     currentQuestionIndex++;
@@ -362,7 +349,6 @@ function startTimer() {
 
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
-            // Chama showGameOver após um pequeno atraso para o timer zerar visualmente
             setTimeout(() => showGameOver(), 500); 
         }
     }, 1000);
@@ -382,6 +368,4 @@ function resetTimer() {
 restartButton.addEventListener('click', startQuiz);
 restartGameOverButton.addEventListener('click', startQuiz);
 
-// Garante que ao iniciar, apenas o quizContainer esteja ativo.
-// Se você tiver uma tela de início antes do quiz, chame-a aqui.
 startQuiz();

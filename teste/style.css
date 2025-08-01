@@ -193,19 +193,16 @@ body {
     background-color: var(--card-background);
     z-index: 10;
     box-sizing: border-box;
-    /* Remover a transição de opacidade aqui, o JS vai controlar isso de forma mais direta */
-    /* transition: opacity 0.5s ease-in-out; */
-    opacity: 0; /* Começa sempre oculto */
-    pointer-events: none; /* Não interacionável por padrão */
-    visibility: hidden; /* Totalmente oculto por padrão */
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    transition: opacity 0.5s ease-in-out;
 }
 
-/* Quando uma tela deve ser mostrada */
 .result-screen.active-screen {
     opacity: 1;
-    pointer-events: auto;
+    pointer-events: auto !important; /* CORREÇÃO: Garante que os elementos se tornem clicáveis */
     visibility: visible;
-    transition: opacity 0.5s ease-in-out; /* Transição apenas ao aparecer */
 }
 
 
@@ -239,7 +236,7 @@ body {
     box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
     width: 180px;
     height: 180px;
-    border-radius: 50%; /* Mantido como círculo */
+    border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -257,11 +254,3 @@ body {
     box-shadow: 0 7px 18px rgba(244, 67, 54, 0.4);
 }
 
-/* A classe 'hide' será menos usada, controlaremos mais com 'active-screen' */
-.hide {
-    opacity: 0;
-    pointer-events: none;
-    visibility: hidden;
-    /* Transição mais curta para o 'hide' caso ainda seja usado */
-    transition: opacity 1000s ease-in-out, visibility 0s 100000s;
-}
