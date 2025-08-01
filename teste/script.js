@@ -232,6 +232,14 @@ function startQuiz() {
     score = 0;
     lives = 5; // Reseta as vidas
     updateLivesDisplay(); // Atualiza a exibição das vidas
+
+    // NOVO: Embaralha a ordem das perguntas no início do jogo
+    shuffleArray(questions);
+
+    showScreen(quizContainer);
+    showQuestion();
+    startTimer();
+
     
     showScreen(quizContainer);
 
