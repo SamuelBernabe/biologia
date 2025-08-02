@@ -39,7 +39,7 @@ body {
     transition: opacity 0.3s ease-in-out;
 }
 
-/* NOVO: Estilos para o Contador de Vidas */
+/* Estilos para o Contador de Vidas */
 .lives-container {
     position: absolute;
     top: 25px;
@@ -59,7 +59,6 @@ body {
 .lives-container .fa-heart {
     color: var(--incorrect-color);
 }
-
 
 /* Estilos do Cronômetro SVG */
 .timer-container {
