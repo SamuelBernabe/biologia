@@ -195,6 +195,7 @@ const correctFeedbackIcon = document.getElementById('correct-feedback');
 const gameOverTitle = document.getElementById('game-over-title');
 const gameOverImage = document.getElementById('game-over-image');
 const gameOverSound = document.getElementById('game-over-sound');
+const correctSound = document.getElementById('correct-sound');
 
 const timerElement = document.getElementById('timer');
 const timerProgressBar = document.querySelector('.timer-progress');
@@ -207,7 +208,6 @@ let score = 0;
 let timeLeft = TIMER_DURATION;
 let timerInterval;
 
-// NOVO: Variáveis para o sistema de vidas
 let lives = 5;
 const livesCountElement = document.getElementById('lives-count');
 
@@ -216,6 +216,14 @@ timerProgressBar.style.strokeDasharray = CIRCUMFERENCE;
 timerProgressBar.style.strokeDashoffset = 0;
 
 const allScreens = [quizContainer, resultContainer, gameOverContainer];
+
+// Função para embaralhar um array (Fisher-Yates shuffle)
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
 
 function showScreen(screenToShow) {
     allScreens.forEach(screen => {
@@ -230,19 +238,13 @@ function showScreen(screenToShow) {
 function startQuiz() {
     currentQuestionIndex = 0;
     score = 0;
-    lives = 5; // Reseta as vidas
-    updateLivesDisplay(); // Atualiza a exibição das vidas
-
-    // NOVO: Embaralha a ordem das perguntas no início do jogo
+    lives = 5;
+    updateLivesDisplay();
+    
+    // Embaralha a ordem das perguntas no início do jogo
     shuffleArray(questions);
 
     showScreen(quizContainer);
-    showQuestion();
-    startTimer();
-
-    
-    showScreen(quizContainer);
-
     showQuestion();
     startTimer();
 }
@@ -254,6 +256,9 @@ function showQuestion() {
     questionIndicator.innerText = `${currentQuestionIndex + 1}/${questions.length}`;
 
     questionElement.innerText = currentQuestion.question;
+
+    // Embaralha as respostas antes de exibi-las
+    shuffleArray(currentQuestion.answers);
 
     currentQuestion.answers.forEach(answer => {
         const button = document.createElement('button');
@@ -283,7 +288,6 @@ function resetState() {
     }
 }
 
-// NOVA FUNÇÃO: Atualiza a exibição das vidas
 function updateLivesDisplay() {
     livesCountElement.innerText = lives;
 }
@@ -307,10 +311,16 @@ function selectAnswer(e) {
         score++;
         correctFeedbackIcon.classList.remove('hide');
         correctFeedbackIcon.classList.add('show');
+        
+        if (correctSound) {
+            correctSound.currentTime = 0;
+            correctSound.play().catch(e => console.error("Erro ao tocar som de acerto:", e));
+        }
+
         setTimeout(advanceQuestion, 1500);
     } else {
-        lives--; // Decrementa uma vida
-        updateLivesDisplay(); // Atualiza a exibição das vidas
+        lives--;
+        updateLivesDisplay();
         if (lives <= 0) {
             setTimeout(() => showGameOver(), 2000);
         } else {
@@ -371,12 +381,12 @@ function startTimer() {
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
             setTimeout(() => {
-                lives--; // Decrementa uma vida ao esgotar o tempo
+                lives--;
                 updateLivesDisplay();
                 if (lives <= 0) {
                     showGameOver();
                 } else {
-                    advanceQuestion(); // Continua o jogo se ainda tiver vidas
+                    advanceQuestion();
                 }
             }, 500); 
         }
@@ -398,37 +408,3 @@ restartButton.addEventListener('click', startQuiz);
 restartGameOverButton.addEventListener('click', startQuiz);
 
 startQuiz();
-
-// Função para embaralhar um array (Fisher-Yates shuffle)
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-}
-
-function showQuestion() {
-    resetState();
-    const currentQuestion = questions[currentQuestionIndex];
-    
-    questionIndicator.innerText = `${currentQuestionIndex + 1}/${questions.length}`;
-
-    questionElement.innerText = currentQuestion.question;
-
-    // NOVO: Embaralha as respostas antes de exibi-las
-    shuffleArray(currentQuestion.answers);
-
-    currentQuestion.answers.forEach(answer => {
-        const button = document.createElement('button');
-        button.innerText = answer.text;
-        button.classList.add('answer-button');
-        if (answer.correct) {
-            button.dataset.correct = answer.correct;
-        }
-        button.addEventListener('click', selectAnswer);
-        answerButtonsElement.appendChild(button);
-    });
-
-    resetTimer();
-    startTimer();
-}
